@@ -1,0 +1,6 @@
+# Dashboard merge scaffold — keep out of commits
+dashboard/_*
+dashboard/_tmp/
+
+# Local Netlify folder
+.netlify
