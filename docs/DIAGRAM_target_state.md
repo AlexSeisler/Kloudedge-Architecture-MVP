@@ -1,6 +1,6 @@
 # Diagram — Target State (Kloudedge Control Plane)
 
-Governed stack: **Founder → Kloudedge Control Plane (Orchestrator) → domain agents**, with **inter-agent contracts**, cross-cutting **self-healing**, **adaptive loop**, **versioned configs**, **persistent memory**, and **observability** aligned to buyer-ready proof.
+Governed stack: **Founder → Kloudedge Control Plane (Orchestrator) → domain agents → Infrastructure + Systems Layer**, with **inter-agent contracts**, cross-cutting **self-healing**, **adaptive loop**, **versioned configs**, **persistent memory**, **observability**, and the **engine / product / data substrates** that turn workflows into something buyers can deploy.
 
 ```mermaid
 flowchart TD
@@ -21,6 +21,30 @@ flowchart TD
     MKT["Marketing Agent<br/>content · distribution · campaigns"]
     DEV["DevOps Agent<br/>infra · deploy · monitoring"]
     MORE["Additional Agents<br/>extensible"]
+  end
+
+  subgraph L3["Layer 3 — Infrastructure + Systems Layer"]
+    direction LR
+    subgraph COL_A["Automation Substrate — the engine"]
+      direction TB
+      WF[Workflow engine<br/>triggers · schedulers · event hooks]
+      API[API integration layer<br/>CRM · email · calendar · social · data]
+      BUS[Webhook + event bus<br/>inter-system triggers · responses]
+      WF --> API --> BUS
+    end
+    subgraph COL_B["Systems Powered — the product clients buy<br/>what the agents power"]
+      direction TB
+      SALESOS[Sales OS<br/>pipeline · outreach sequences · follow-up automation]
+      MARKOS[Marketing OS<br/>content calendar · distribution · campaign analytics]
+      DEVOS[DevOps OS<br/>deploy pipeline · infra monitoring · alert routing]
+    end
+    subgraph COL_C["Data + Memory Substrate — the compounding advantage"]
+      direction TB
+      PMSTORE[(Persistent memory store<br/>cross-agent shared context)]
+      KB[(Knowledge base<br/>domain-specific · per vertical)]
+      EVSTORE[(Evidence store<br/>compliance-ready · client-facing proof)]
+      AUDLOG[(Audit log<br/>immutable operational record)]
+    end
   end
 
   subgraph CC_SH["Cross-cutting — Self-healing"]
@@ -78,6 +102,39 @@ flowchart TD
   PMEM -.-> DEV
   PMEM -.-> MORE
 
+  SALES --> SALESOS
+  SALESOS --> SALES
+  MKT --> MARKOS
+  MARKOS --> MKT
+  DEV --> DEVOS
+  DEVOS --> DEV
+
+  SALES -->|event hooks| WF
+  MKT -->|event hooks| WF
+  DEV -->|event hooks| WF
+  MORE -->|event hooks| WF
+
+  SALES -->|read/write| PMSTORE
+  PMSTORE -->|read/write| SALES
+  MKT -->|read/write| PMSTORE
+  PMSTORE -->|read/write| MKT
+  DEV -->|read/write| PMSTORE
+  PMSTORE -->|read/write| DEV
+  MORE -->|read/write| PMSTORE
+  PMSTORE -->|read/write| MORE
+
+  SALES -->|read/write| KB
+  KB -->|read/write| SALES
+  MKT -->|read/write| KB
+  KB -->|read/write| MKT
+  DEV -->|read/write| KB
+  KB -->|read/write| DEV
+  MORE -->|read/write| KB
+  KB -->|read/write| MORE
+
+  EVSTORE --> EG
+  AUDLOG --> OBS
+
   OBS -.-> CP
   OBS -.-> SALES
   OBS -.-> MKT
@@ -95,3 +152,6 @@ flowchart TD
 | Version control | **rollback on regression** |
 | Persistent memory | **platform stickiness** |
 | Adaptive loop | **self-improving system** |
+| Automation Substrate | **the engine** |
+| Systems Powered | **the product clients buy** / **what the agents power** |
+| Data + Memory Substrate | **the compounding advantage** |

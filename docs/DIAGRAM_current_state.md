@@ -29,6 +29,8 @@ flowchart TD
     D4[Agent]
   end
 
+  RAW["Raw Tooling / No Integration Layer<br/>point-to-point connections, manual config, no shared substrate"]
+
   WG[Workflow glue]
 
   subgraph pockets["No shared state — isolated pockets"]
@@ -60,6 +62,10 @@ flowchart TD
   DEAD[Dead end — no escalation ladder]
   S5 -.-> DEAD
   M5 -.-> DEAD
+
+  RAW --- S3
+  RAW --- M3
+  RAW --- D2
 ```
 
-**Read:** Cross-cluster links carry **DRIFT**, **DUPLICATION**, and **NO ACCOUNTABILITY** because nothing authoritative owns phase boundaries or proof-of-done. **Manual review** concentrates on the **founder** (bottleneck). **No shared state** keeps pockets from compounding into one audit-ready record. Sideways “escalation” hits **dead ends**—there is no upward ladder with teeth.
+**Read:** Cross-cluster links carry **DRIFT**, **DUPLICATION**, and **NO ACCOUNTABILITY** because nothing authoritative owns phase boundaries or proof-of-done. **Manual review** concentrates on the **founder** (bottleneck). **No shared state** keeps pockets from compounding into one audit-ready record. **Raw tooling** ties clusters together without an integration layer—point-to-point glue only. Sideways “escalation” hits **dead ends**—there is no upward ladder with teeth.
