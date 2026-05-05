@@ -80,31 +80,37 @@
   .btn-heal { border-color: var(--warn); color: #fdba74; background: rgba(245,158,11,.12); }
   .btn-esc { border-color: var(--danger); color: #fca5a5; background: rgba(248,81,73,.1); }
 
-  .sol-layout {
-    display: grid;
-    grid-template-columns: 60% 40%;
-    gap: 1rem;
-    align-items: stretch;
-    min-height: 520px;
+  .sol-flow {
     margin-top: 1rem;
-  }
-  @media (max-width: 960px) { .sol-layout { grid-template-columns: 1fr; } }
-  .sol-left {
-    min-height: 480px;
-    max-height: calc(100vh - 140px);
-    overflow: auto;
-  }
-  .sol-right {
     display: flex;
     flex-direction: column;
-    gap: .65rem;
-    min-height: 480px;
+    gap: 1.1rem;
+  }
+  .sol-diagram-row {
+    width: 100%;
+    min-height: 0;
+  }
+  .sol-diagram-row .diagram-host {
+    min-height: min(620px, 70vh);
+    max-height: calc(100vh - 120px);
+    overflow: auto;
+  }
+  .sol-meta-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
+    gap: 1rem;
+    align-items: stretch;
+  }
+  @media (max-width: 900px) {
+    .sol-meta-row { grid-template-columns: 1fr; }
   }
   .sol-detail-panel {
-    flex: 0 0 40%;
-    max-height: 40%;
+    min-height: 160px;
+    max-height: 280px;
     background: var(--bg2); border: 1px solid var(--border);
     border-radius: 12px; padding: .85rem 1rem; overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
   .sol-detail-panel h4 {
     margin: 0 0 .45rem; font-size: .72rem; text-transform: uppercase;
@@ -113,7 +119,6 @@
   .sol-detail-panel p { margin: 0; font-size: .88rem; white-space: pre-wrap; }
 
   .sol-log-wrap {
-    flex: 1 1 60%;
     min-height: 0;
     display: flex;
     flex-direction: column;
@@ -126,15 +131,29 @@
     flex: 1;
     background: #010409; border: 1px solid var(--border); border-radius: 12px;
     font-family: var(--mono); font-size: .68rem; padding: .65rem;
-    overflow-y: auto; min-height: 140px;
+    overflow-y: auto;
+    min-height: 200px;
+    max-height: min(320px, 40vh);
   }
   .log-panel .log-line {
     padding: .12rem 0; border-bottom: 1px solid #21262d; color: #c9d1d9;
   }
   .log-panel .log-line:last-child { border-bottom: none; }
 
-  .sim-buttons { margin-top: 1.25rem; }
-  .sim-caption { font-size: .78rem; color: var(--muted); margin-top: .5rem; max-width: 85ch; }
+  .sim-btn-group { display: flex; flex-wrap: wrap; gap: .35rem; flex: 0 0 auto; }
+  .sim-buttons {
+    margin-top: .25rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: .5rem 1rem;
+  }
+  .sim-caption {
+    flex: 1 1 260px;
+    font-size: .78rem; color: var(--muted);
+    margin: 0; padding-top: .35rem;
+    line-height: 1.45;
+  }
 
   /* Tab visuals */
   .tabs { margin-top: 1rem; }
@@ -259,11 +278,11 @@
   <h1>Solution: Kloudedge Control Plane (live model)</h1>
   <p class="lead">Same domain agents, now under routing, gates, evidence, versioning, and observability. Click any major node for detail. Run simulations below.</p>
 
-  <div class="sol-layout">
-    <div class="sol-left">
+  <div class="sol-flow">
+    <div class="sol-diagram-row">
       <div id="target-diagram-host" class="diagram-host"></div>
     </div>
-    <div class="sol-right">
+    <div class="sol-meta-row">
       <div class="sol-detail-panel">
         <h4>Layer detail</h4>
         <p id="side-body">Click a node in the diagram to see layer details.</p>
@@ -276,9 +295,11 @@
   </div>
 
   <div class="sim-buttons">
-    <button type="button" class="btn btn-primary" id="btn-run-task">Run a task</button>
-    <button type="button" class="btn btn-heal" id="btn-self-heal">Trigger self-healing</button>
-    <button type="button" class="btn btn-esc" id="btn-escalate">Trigger escalation</button>
+    <div class="sim-btn-group">
+      <button type="button" class="btn btn-primary" id="btn-run-task">Run a task</button>
+      <button type="button" class="btn btn-heal" id="btn-self-heal">Trigger self-healing</button>
+      <button type="button" class="btn btn-esc" id="btn-escalate">Trigger escalation</button>
+    </div>
     <p class="sim-caption"><strong>Run a task:</strong> happy path from Founder through Sales and Marketing gates.<br>
     <strong>Self-healing:</strong> DevOps fails a gate once, retries after versioned config adjustment, then passes.<br>
     <strong>Escalation:</strong> DevOps fails twice; control plane escalates to Founder.</p>
