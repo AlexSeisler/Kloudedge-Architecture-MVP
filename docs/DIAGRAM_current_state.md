@@ -1,47 +1,65 @@
 # Diagram — Current State (Kloudedge Blob Model)
 
-Flat agent cluster with workflow glue: strong execution at the edges, weak structure in the middle. The founder stays load-bearing as the informal orchestration layer; context stays siloed and handoffs stay loose—coordination debt scales faster than headcount.
+Flat domain clusters plus workflow glue: roughly **11–14 agents** in motion without a control plane—strong execution at the edges, weak structure in the middle. The founder stays load-bearing through **manual review**; context stays siloed and handoffs stay informal—coordination debt scales faster than headcount.
 
 ```mermaid
 flowchart TD
-  F(["Founder — bottleneck<br/>manual orchestration layer"])
+  F(["Founder — bottleneck<br/>manual review · no control plane"])
 
-  subgraph cluster["Flat agent cluster — no hierarchy"]
-    A1[Agent A]
-    A2[Agent B]
-    A3[Agent C]
+  subgraph SC["Sales Agent cluster"]
+    S1[Agent]
+    S2[Agent]
+    S3[Agent]
+    S4[Agent]
+    S5[Agent]
+  end
+
+  subgraph MC["Marketing Agent cluster"]
+    M1[Agent]
+    M2[Agent]
+    M3[Agent]
+    M4[Agent]
+    M5[Agent]
+  end
+
+  subgraph DC["DevOps Agent cluster"]
+    D1[Agent]
+    D2[Agent]
+    D3[Agent]
+    D4[Agent]
   end
 
   WG[Workflow glue]
 
   subgraph pockets["No shared state — isolated pockets"]
-    P1[(Local context A)]
-    P2[(Local context B)]
-    P3[(Local context C)]
+    PS[(Sales pocket)]
+    PM[(Marketing pocket)]
+    PD[(DevOps pocket)]
   end
 
-  A1 -->|loose handoff — no contract| A2
-  A2 -->|loose handoff — no contract| A1
-  A2 -->|drift| A3
-  A3 -->|duplication| A1
-  A1 -->|no accountability| A2
+  S1 -->|loose handoff — no contract| M1
+  M1 -->|loose handoff — no contract| S3
 
-  A1 --- P1
-  A2 --- P2
-  A3 --- P3
+  S2 -->|DRIFT| M2
+  M3 -->|DUPLICATION| D2
+  D3 -->|NO ACCOUNTABILITY| S4
 
-  A1 -->|manual review| F
-  A2 -->|manual review| F
-  A3 -->|manual review| F
+  S1 --- PS
+  M1 --- PM
+  D1 --- PD
+
+  S1 -->|manual review| F
+  M1 -->|manual review| F
+  D1 -->|manual review| F
 
   F -->|reroute / rework| WG
-  WG --> A1
-  WG --> A2
-  WG --> A3
+  WG --> S2
+  WG --> M3
+  WG --> D3
 
   DEAD[Dead end — no escalation ladder]
-  A3 -.-> DEAD
-  A2 -.-> DEAD
+  S5 -.-> DEAD
+  M5 -.-> DEAD
 ```
 
-**Read:** Inter-agent links carry **drift**, **duplication**, and **no accountability** because nothing authoritative defines phase ownership or proof of done. **Manual review** concentrates on the founder (bottleneck). **No shared state** keeps pockets from compounding into one audit-ready record. Sideways “escalation” hits **dead ends**—there is no upward ladder with teeth.
+**Read:** Cross-cluster links carry **DRIFT**, **DUPLICATION**, and **NO ACCOUNTABILITY** because nothing authoritative owns phase boundaries or proof-of-done. **Manual review** concentrates on the **founder** (bottleneck). **No shared state** keeps pockets from compounding into one audit-ready record. Sideways “escalation” hits **dead ends**—there is no upward ladder with teeth.

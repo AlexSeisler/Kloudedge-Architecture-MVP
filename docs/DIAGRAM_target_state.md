@@ -1,45 +1,97 @@
-# Diagram — Target State (ACS Control Plane)
+# Diagram — Target State (Kloudedge Control Plane)
 
-Governance layer on top of execution: hierarchy, handoff contracts, **confirm-before-dispatch** through an **evidence gate**, **escalation** that runs **upward only**, **shared state** all layers read/write, and an **execution log** that mirrors runs for audit.
+Governed stack: **Founder → Kloudedge Control Plane (Orchestrator) → domain agents**, with **inter-agent contracts**, cross-cutting **self-healing**, **adaptive loop**, **versioned configs**, **persistent memory**, and **observability** aligned to buyer-ready proof.
 
 ```mermaid
 flowchart TD
-  GM[GM]
+  subgraph L0["Layer 0 — Founder / Command"]
+    FD["Founder<br/>priorities · evidence summaries · escalation decisions<br/>does not operate agents directly"]
+  end
 
-  SA[System Architect]
+  subgraph L1["Layer 1 — Kloudedge Control Plane"]
+    CP["Orchestrator<br/>routing · handoff contracts · agent config registry"]
+    PMEM[(Persistent memory<br/>platform stickiness)]
+    VCTL["Version control<br/>rollback on regression"]
+    CP --- PMEM
+    CP --- VCTL
+  end
 
-  EG["Evidence gate<br/>client deliverable"]
+  subgraph L2["Layer 2 — Domain agents"]
+    SALES["Sales Agent<br/>outreach · pipeline · follow-up"]
+    MKT["Marketing Agent<br/>content · distribution · campaigns"]
+    DEV["DevOps Agent<br/>infra · deploy · monitoring"]
+    MORE["Additional Agents<br/>extensible"]
+  end
 
-  EA[Execution Agent]
+  subgraph CC_SH["Cross-cutting — Self-healing"]
+    DET[Failure detection]
+    RET[Auto-retry]
+    TRG[Escalation trigger]
+    DET --> RET --> TRG
+  end
 
-  SS[(Shared state<br/>platform stickiness)]
+  subgraph CC_AD["Adaptive loop — self-improving system"]
+    EG["Evidence gate<br/>client deliverable"]
+    FB[Feedback]
+    CU[Config update]
+    EG --> FB --> CU --> NR[Next run]
+  end
 
-  LOG["Execution log / observability<br/>audit trail"]
+  OBS["Observability<br/>execution log · pipeline health · escalation trail<br/>audit trail"]
 
-  GM -->|handoff contract| SA
-  SA -->|handoff contract| GM
+  FD -->|priorities · policies| CP
+  CP -->|evidence summary · escalation needing decision| FD
 
-  SA -->|phase brief — dispatch| EA
-  EA -->|structured handoff + artifacts| EG
-  EG -->|confirm-before-dispatch| SA
+  CP -->|dispatch · routing| SALES
+  CP -->|dispatch · routing| MKT
+  CP -->|dispatch · routing| DEV
+  CP -->|dispatch · routing| MORE
 
-  EA -.->|escalation| SA
-  SA -.->|escalation| GM
+  SALES -->|qualified lead handoff| MKT
+  MKT -->|campaign deploy trigger| DEV
 
-  GM --- SS
-  SA --- SS
-  EA --- SS
+  SALES -->|output| EG
+  MKT -->|output| EG
+  DEV -->|output| EG
+  MORE -->|output| EG
 
-  LOG -.->|mirrors| GM
-  LOG -.->|mirrors| SA
-  LOG -.->|mirrors| EA
-  LOG -.->|mirrors| EG
+  SALES -->|escalation · state update| CP
+  MKT -->|escalation · state update| CP
+  DEV -->|escalation · state update| CP
+  MORE -->|escalation · state update| CP
+
+  CU --> VCTL
+  NR --> CP
+
+  DET -.-> SALES
+  DET -.-> MKT
+  DET -.-> DEV
+  DET -.-> MORE
+  RET -.-> SALES
+  RET -.-> MKT
+  RET -.-> DEV
+  RET -.-> MORE
+  TRG --> CP
+
+  PMEM -.-> SALES
+  PMEM -.-> MKT
+  PMEM -.-> DEV
+  PMEM -.-> MORE
+
+  OBS -.-> CP
+  OBS -.-> SALES
+  OBS -.-> MKT
+  OBS -.-> DEV
+  OBS -.-> MORE
+  OBS -.-> EG
 ```
 
-**Business labels**
+**Business labels on key nodes**
 
-| Element | Meaning |
-|--------|---------|
-| Evidence gate | **Client deliverable** — verifiable outputs buyers can defend internally (what shipped, validated, escalated, locked). |
-| Execution log | **Audit trail** — what ran, what passed gates, what escalated; substrate for enterprise trust. |
-| Shared state | **Platform stickiness** — durable context and obligations compound instead of evaporating between phases. |
+| Node | Label |
+|------|--------|
+| Evidence gate | **client deliverable** |
+| Execution log (inside Observability) | **audit trail** |
+| Version control | **rollback on regression** |
+| Persistent memory | **platform stickiness** |
+| Adaptive loop | **self-improving system** |
